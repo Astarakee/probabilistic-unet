@@ -1,0 +1,5 @@
+# For installation, the following steps were done:
+```
+git clone https://github.com/jenspetersen/probabilistic-unet.git
+pip install -e probabilistic-unet
+```
