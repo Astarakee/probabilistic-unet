@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import SimpleITK as itk
 from sitk_stuff import read_nifti
 from paths_dirs_stuff import path_contents, path_contents_pattern, create_path
 
@@ -38,11 +39,13 @@ def normalize_array(seq_abs_path):
 
 
 data_path = "/mnt/workspace/data/GBM/UCSF-ALPTDG/UCSF_POSTOP_GLIOMA_DATASET_FINAL_v1.0"
+save_path = "/mnt/workspace/data/GBM/UCSF-ALPTDG/mehdi_prob_growth"
 subjects = path_contents(data_path)
 subjects = [x for x in subjects if '.xlsx' not in x]
 n_subjects = len(subjects)
 
 for ix, case in enumerate(subjects):
+    print("working on subject {} out of {}".format(ix+1, n_subjects))
     case_abs = os.path.join(data_path, case)
     case_time1 = GetTimePointScan(case_abs, pattern="time1")
     case_time2 = GetTimePointScan(case_abs, pattern="time2")
@@ -65,7 +68,6 @@ for ix, case in enumerate(subjects):
 
     for k2,v2 in case_seq2.items():
         seq_abs_path2 = os.path.join(case_abs, v2)
-        print(seq_abs_path2)
         if k2 != "seg":
             vol_norm2 = normalize_array(seq_abs_path2)
             time2_data.append(vol_norm2)
@@ -73,4 +75,17 @@ for ix, case in enumerate(subjects):
             seg_array2, _, seg_size2, _, _, _ = read_nifti(seq_abs_path2)
             seg_array2= seg_array2.astype("uint8")
 
+    time1_data_np = np.array(time1_data)
+    time2_data_np = np.array(time2_data)
+    ch, dep, row, col = np.shape(time1_data_np)
+    data_stack = np.zeros((3, ch, dep, row, col), np.float32)
+    data_stack[0,::] = time1_data_np
+    data_stack[1,::] = time2_data_np
+    data_stack[2,::] = time2_data_np
 
+    #data_itk = itk.GetImageFromArray(data_stack)
+    #abs_path_write = os.path.join(save_path, "subject.nii.gz")
+    #itk.WriteImage(data_itk, abs_path_write)
+    subject_name = case+".npz"
+    write_abs_path = os.path.join(save_path, subject_name)
+    np.savez_compressed(write_abs_path, data_stack)
