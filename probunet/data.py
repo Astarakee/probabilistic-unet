@@ -1,7 +1,7 @@
 import os
 import json
 import numpy as np
-from batchgenerators.dataloading import SlimDataLoaderBase
+from batchgenerators.dataloading.data_loader import SlimDataLoaderBase
 
 # data_dir = "INSERT YOUR RELATIVE DATA DIRECTORY HERE"
 # file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,7 +41,7 @@ def split(N=5, seed=1):
 def load(mmap_mode=None,
          subjects="all",
          dtype=np.float32,
-         crop_data=True,
+         crop_data=False,
          npz=False):
     """Load data. Note that the data need to be already registered,
     skull-stripped, and mean/std normalized.
@@ -119,7 +119,7 @@ class LinearBatchGenerator(SlimDataLoaderBase):
             if self.use_default_shapes:
                 shapes = json.load(open(os.path.join(data_dir, "multi_shapes.json"), "r"))
             else:
-                shapes = {key: val.shape for key, val in self._data.items()}
+                shapes = {key: val for key, val in self._data.items()}
             for subject in sorted(self._data.keys()):
                 current_timesteps = shapes[subject][0]
                 if current_timesteps < self.time_size:

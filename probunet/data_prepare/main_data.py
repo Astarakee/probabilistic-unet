@@ -2,6 +2,7 @@ import os
 import numpy as np
 import SimpleITK as itk
 from sitk_stuff import read_nifti
+from json_pickle_stuff import write_json
 from paths_dirs_stuff import path_contents, path_contents_pattern, create_path
 
 
@@ -86,6 +87,13 @@ for ix, case in enumerate(subjects):
     #data_itk = itk.GetImageFromArray(data_stack)
     #abs_path_write = os.path.join(save_path, "subject.nii.gz")
     #itk.WriteImage(data_itk, abs_path_write)
-    subject_name = case+".npz"
+    subject_name = case+".npy"
     write_abs_path = os.path.join(save_path, subject_name)
-    np.savez_compressed(write_abs_path, data_stack)
+    np.save(write_abs_path, data_stack)
+
+
+identifiers = path_contents_pattern(save_path, ".npy")
+multi_shape = {}
+for item in identifiers:
+    multi_shape[item] = (3,4,155,240,240)
+write_json(os.path.join(save_path, "multi_shapes.json"), multi_shape)

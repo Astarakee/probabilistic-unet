@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from probunet.util import make_onehot as make_onehot_segmentation, make_slices, match_to
+from util import make_onehot as make_onehot_segmentation, make_slices, match_to
 
 
 def is_conv(op):
