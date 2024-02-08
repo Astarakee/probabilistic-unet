@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../../probunet')
 import matplotlib
 matplotlib.use("agg")
 import torch.backends.cudnn as cudnn
@@ -14,9 +16,9 @@ import torch
 from trixi.util import ResultLogDict
 from trixi.experiment import PytorchExperiment
 from trixi.logger import TelegramMessageLogger
-from batchgenerators.transforms import Compose
+from batchgenerators.transforms.abstract_transforms import Compose
 
-from probunet.util import check_attributes, set_seeds
+from util import check_attributes, set_seeds
 
 
 

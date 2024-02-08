@@ -1,4 +1,6 @@
-from probunet.experiment.probabilistic_unet_future_segmentation import ProbabilisticUNetFutureSegmentation
+import sys
+sys.path.append('../../probunet')
+from experiment.probabilistic_unet_future_segmentation  import ProbabilisticUNetFutureSegmentation
 
 import os
 import numpy as np
@@ -6,24 +8,22 @@ import time
 import torch
 from torch import nn, optim, distributions
 from trixi.util import Config
-from batchgenerators.transforms import (
-    MirrorTransform,
-    SpatialTransform,
-    CenterCropTransform,
-    SegLabelSelectionBinarizeTransform,
-    Compose
-)
-from batchgenerators.dataloading import MultiThreadedAugmenter
 
-from probunet.model import ProbabilisticSegmentationNet, InjectionUNet3D, InjectionConvEncoder3D
-from probunet.eval import Evaluator, dice
-from probunet.util import (
+from batchgenerators.transforms.spatial_transforms import MirrorTransform, SpatialTransform
+from batchgenerators.transforms.crop_and_pad_transforms import CenterCropTransform
+from batchgenerators.transforms.channel_selection_transforms import SegLabelSelectionBinarizeTransform
+from batchgenerators.transforms.abstract_transforms import Compose
+from batchgenerators.dataloading.multi_threaded_augmenter import MultiThreadedAugmenter
+
+from model import ProbabilisticSegmentationNet, InjectionUNet3D, InjectionConvEncoder3D
+from eval import Evaluator, dice
+from util import (
     get_default_experiment_parser,
     run_experiment,
     make_onehot as make_onehot_segmentation,
     coordinate_grid_samples
 )
-from probunet import data
+import data
 
 
 
