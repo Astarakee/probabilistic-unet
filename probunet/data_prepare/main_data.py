@@ -45,6 +45,7 @@ subjects = path_contents(data_path)
 subjects = [x for x in subjects if '.xlsx' not in x]
 n_subjects = len(subjects)
 
+
 for ix, case in enumerate(subjects):
     print("working on subject {} out of {}".format(ix+1, n_subjects))
     case_abs = os.path.join(data_path, case)
@@ -55,26 +56,26 @@ for ix, case in enumerate(subjects):
 
     time1_data = []
     time2_data = []
-    time1_seg = []
-    time2_seg = []
 
     for k1,v1 in case_seq1.items():
         seq_abs_path = os.path.join(case_abs, v1)
         if k1 != "seg":
             vol_norm = normalize_array(seq_abs_path)
             time1_data.append(vol_norm)
-        else:
-            seg_array, _, seg_size, _, _, _ = read_nifti(seq_abs_path)
-            seg_array = seg_array.astype("uint8")
+    seg1_abs_path = os.path.join(case_abs,case_seq1["seg"])
+    seg_array1, _, seg_size1, _, _, _ = read_nifti(seg1_abs_path)
+    seg_array1 = seg_array1.astype("uint8")
+    time1_data.append(seg_array1)
 
     for k2,v2 in case_seq2.items():
         seq_abs_path2 = os.path.join(case_abs, v2)
         if k2 != "seg":
             vol_norm2 = normalize_array(seq_abs_path2)
             time2_data.append(vol_norm2)
-        else:
-            seg_array2, _, seg_size2, _, _, _ = read_nifti(seq_abs_path2)
-            seg_array2= seg_array2.astype("uint8")
+    seg2_abs_path = os.path.join(case_abs,case_seq2["seg"])
+    seg_array2, _, seg_size2, _, _, _ = read_nifti(seg2_abs_path)
+    seg_array2 = seg_array2.astype("uint8")
+    time2_data.append(seg_array2)
 
     time1_data_np = np.array(time1_data)
     time2_data_np = np.array(time2_data)
@@ -95,5 +96,6 @@ for ix, case in enumerate(subjects):
 identifiers = path_contents_pattern(save_path, ".npy")
 multi_shape = {}
 for item in identifiers:
-    multi_shape[item] = (3,4,155,240,240)
+    item = item.split('.npy')[0]
+    multi_shape[item] = (3,5,155,240,240)
 write_json(os.path.join(save_path, "multi_shapes.json"), multi_shape)

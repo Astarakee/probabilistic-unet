@@ -3,7 +3,7 @@ import json
 import numpy as np
 from batchgenerators.dataloading.data_loader import SlimDataLoaderBase
 
-# data_dir = "INSERT YOUR RELATIVE DATA DIRECTORY HERE"
+# data_dir = "/mnt/workspace/data/GBM/UCSF-ALPTDG/mehdi_prob_growth"
 # file_dir = os.path.dirname(os.path.abspath(__file__))
 # data_dir = os.path.join(file_dir, data_dir)
 data_dir = None
@@ -119,7 +119,7 @@ class LinearBatchGenerator(SlimDataLoaderBase):
             if self.use_default_shapes:
                 shapes = json.load(open(os.path.join(data_dir, "multi_shapes.json"), "r"))
             else:
-                shapes = {key: val for key, val in self._data.items()}
+                shapes = {key: val.shape for key, val in self._data.items()}
             for subject in sorted(self._data.keys()):
                 current_timesteps = shapes[subject][0]
                 if current_timesteps < self.time_size:
